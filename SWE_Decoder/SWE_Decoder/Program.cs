@@ -134,10 +134,8 @@ namespace SWE_Decoder
         {
             //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
             ProblemInstance ppi = Preprocess(pi);
-            //1:lav liste med alle store bogstaver der optræder i t
-            List<Char> GammaChars = ExtractGammaChars(ppi);
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi,GammaChars))
+            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi))
             {
                 if (ppi.Validate(translation) == "YES") return translation;
             }
@@ -156,26 +154,36 @@ namespace SWE_Decoder
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse
         }
 
-        private static List<Dictionary<Char, String>> FindInterestingTranslations(ProblemInstance pi, List<Char> GammaChars)
+        private static List<Dictionary<Char, String>> FindInterestingTranslations(ProblemInstance pi)
         {
-            List<Dictionary<Char, String>> output = new List<Dictionary<char, string>>();
+            List<Dictionary<char, string>> output = new List<Dictionary<char, string>>();
+            List<Dictionary<char, string>> buffer;
+            output.Add(new Dictionary<char,string>());
             // HACK: Brute Force Approach
-
+            foreach(KeyValuePair<char,List<string>> kvp in pi.Expansion1)
+            {
+                buffer = new List<Dictionary<char, string>>();
+                foreach (string s in kvp.Value)
+                {
+                    foreach (Dictionary<char, string> dict in output)
+                    {
+                        Dictionary<char, string> newdict = CloneDict(dict);
+                        newdict.Add(kvp.Key, s);
+                        buffer.Add(newdict);
+                    }
+                }
+                output = buffer;
+            }
             return output;
         }
 
-        private static List<Char> ExtractGammaChars(ProblemInstance pi)
+        private static Dictionary<char, string> CloneDict(Dictionary<char, string> dict)
         {
-            String output = "";
-            foreach (String s in pi.t)
-            {
-                foreach (Char c in s)
-                {
-                    if (IsCapital(c) && !output.Contains(c)) output += c;
-                }
-            }
-            return output.ToList<Char>();
+            Dictionary<char, string> newdict = new Dictionary<char, string>();
+            foreach (KeyValuePair<char, string> kvp in dict) newdict.Add(kvp.Key, kvp.Value);
+            return newdict;
         }
+
 
         private static ProblemInstance Preprocess(ProblemInstance pi)
         {
