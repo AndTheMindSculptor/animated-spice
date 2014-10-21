@@ -12,7 +12,7 @@ namespace SWE_Decoder
     {
         static void Main(string[] args)
         {
-            Console.Title = "SWE Decoder";
+            Console.Title = "SWE Decoder"; 
             Console.SetWindowSize(100, 50);
 
             int k = 0;
