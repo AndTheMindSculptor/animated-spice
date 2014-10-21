@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SWE_Decoder
 {
-    class ProblemInstance
+    public class ProblemInstance
     {
         public int k = 0;
         public String s = "";//lowercase only
