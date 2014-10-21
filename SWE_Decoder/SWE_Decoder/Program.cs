@@ -121,14 +121,18 @@ namespace SWE_Decoder
 
 
 
-        private static void newAlgo() //<-- use this approach
+        private static Dictionary<Char,String> newAlgo(ProblemInstance pi) //<-- use this approach
         {
             //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
-
+            ProblemInstance ppi = Preprocess(pi);
             //1:lav liste med alle store bogstaver der optræder i t
-
+            List<Char> GammaChars = ExtractGammaChars(ppi);
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-
+            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi))
+            {
+                if (ppi.validate(translation)) return translation;
+            }
+            return null;
             //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
 
 
@@ -141,6 +145,40 @@ namespace SWE_Decoder
 
 
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse
+        }
+
+        private static Dictionary<char, string> FindInterestingTranslations(ProblemInstance ppi)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static List<Char> ExtractGammaChars(ProblemInstance pi)
+        {
+            String output = "";
+            foreach (String s in pi.t)
+            {
+                foreach (Char c in s)
+                {
+                    if (IsCapital(c) && !output.Contains(c)) output += c;
+                }
+            }
+            return output.ToList<Char>();
+        }
+
+        private static ProblemInstance Preprocess(ProblemInstance pi)
+        {
+            ProblemInstance ppi;
+            //  TODO: add preprocesses
+            ppi = Prune(pi);
+            return ppi;
+        }
+
+        private static ProblemInstance Prune(ProblemInstance pi)
+        {
+            Dictionary<Char, List<String>> prunedexp = new Dictionary<char, List<string>>();
+            //  TODO: prune here
+            ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
+            return ppi;
         }
 
         private static void algo(ProblemInstance pi)
