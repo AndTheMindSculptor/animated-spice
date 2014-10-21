@@ -12,9 +12,6 @@ namespace SWE_Decoder
     {
         static void Main(string[] args)
         {
-            //Console.Title = "SWE Decoder";
-            //Console.SetWindowSize(50, 50);
-
             int k = 0;
             String s = "";//lowercase only
             List<String> t = new List<string>();//both lower- and uppercase
@@ -22,16 +19,7 @@ namespace SWE_Decoder
 
             string line = "";
             int linecounter = 0, errorCounter = 0;
-            //Console.WriteLine("input name of file (without extension)");
-            //string filename = Console.ReadLine();
-            //if (!File.Exists(filename + ".SWE"))
-            //{
-            //    Console.WriteLine("file not found!");
-            //    Console.ReadLine();
-            //    return;
-            //}
-            //StreamReader file = new StreamReader(filename+".SWE");
-            //Console.WriteLine();
+
             while ((line = Console.In.ReadLine()) != null)
             {
                 switch (linecounter)
@@ -43,8 +31,6 @@ namespace SWE_Decoder
                         }
                         catch
                         {
-                            //Console.WriteLine("k was not a number");
-                            //Console.Read();
                             Console.Out.WriteLine("NO");
                             Console.Out.Close();
                             return;
@@ -54,10 +40,7 @@ namespace SWE_Decoder
                         if (Regex.Match(line, "[a-z]*").Length == line.Length)
                             s = line;
                         else
-                        {
-                            //Console.WriteLine("s contained letters not in Sigma");
                             errorCounter++;
-                        }
                         break;
                     case 2:
                         for (int i = 0; i < k; i++)
@@ -65,13 +48,10 @@ namespace SWE_Decoder
                             if (Regex.Match(line, "[a-zA-Z]*").Length == line.Length)
                                 t.Add(line);
                             else
-                            {
-                                //Console.WriteLine("wrong input reading t at line: " + linecounter);
                                 errorCounter++;
-                            }
                             if (i + 1 < k)
                             {
-                                line = Console.In.ReadLine();//file.ReadLine();
+                                line = Console.In.ReadLine();
                                 linecounter++;
                             }
                         }
@@ -79,10 +59,7 @@ namespace SWE_Decoder
                     default:
                         Char GammaChar = line.ElementAt(0);
                         if (Regex.Match(GammaChar.ToString(), "[A-Z]").Length == 0)
-                        {
-                            //Console.WriteLine("Dictionary key invalid at line: " + linecounter + k);
                             errorCounter++;
-                        }
                         String SigmaWords = line.Substring(2);
                         List<String> sWordList = SigmaWords.Split(',').ToList<String>();
                         foreach (String teststring in sWordList)
@@ -98,54 +75,21 @@ namespace SWE_Decoder
                 }
 
                 linecounter++;
-            }
-            
-            //file.Close();
+            }            
+
             Console.In.Close();
 
             ProblemInstance pi = new ProblemInstance(k, s, t, Expansion1);
 
             //test code for CodeJudge
-            //StreamWriter sw = new StreamWriter(@".\Files.txt");
             if (errorCounter > 0)
             {
-                //sw.AutoFlush = true;
-                //Console.SetOut(sw);
                 Console.Out.Close();
                 Console.Out.WriteLine("NO");
                 Console.Out.Close();
                 return;
             }
-            //END OF test code for CodeJudge
 
-
-            //Console.WriteLine(pi.ToString());
-            
-            //Console.WriteLine("numbers of errors found: "+errorCounter);
-            //Console.WriteLine();
-            //Console.WriteLine("press enter to exit, or t+enter to test the file");
-            //string userSelection = Console.ReadLine();
-
-            //if (userSelection != "t")
-            //    return;
-
-            //algo(pi);
-            //recursive(pi.t.First(), pi.Expansion1);
-            //Dictionary<Char,String> assignment = new Dictionary<Char,String>();
-            //assignment.Add('A', "b");
-            //assignment.Add('B', "d");
-            //assignment.Add('C', "d");
-            ////assignment.Add('D', "d");
-            ////assignment.Add('E', "e");
-            //Console.WriteLine(pi.Validate(assignment));
-
-            //Console.ReadLine();
-
-
-            //test code for CodeJudge
-            //sw = new StreamWriter(@".\Files.txt");
-            //sw.AutoFlush = true;
-            //Console.SetOut(sw);
             Console.Out.WriteLine("A:a");
             Console.Out.WriteLine("B:b");
             Console.Out.WriteLine("C:c");
