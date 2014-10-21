@@ -12,8 +12,8 @@ namespace SWE_Decoder
     {
         static void Main(string[] args)
         {
-            Console.Title = "SWE Decoder";
-            Console.SetWindowSize(50, 50);
+            //Console.Title = "SWE Decoder";
+            //Console.SetWindowSize(50, 50);
 
             int k = 0;
             String s = "";//lowercase only
@@ -22,17 +22,17 @@ namespace SWE_Decoder
 
             string line = "";
             int linecounter = 0, errorCounter = 0;
-            Console.WriteLine("input name of file (without extension)");
-            string filename = Console.ReadLine();
-            if (!File.Exists(filename + ".SWE"))
-            {
-                Console.WriteLine("file not found!");
-                Console.ReadLine();
-                return;
-            }
-            StreamReader file = new StreamReader(filename+".SWE");//hard-coded file name   
-            Console.WriteLine();
-            while ((line = file.ReadLine()) != null)
+            //Console.WriteLine("input name of file (without extension)");
+            //string filename = Console.ReadLine();
+            //if (!File.Exists(filename + ".SWE"))
+            //{
+            //    Console.WriteLine("file not found!");
+            //    Console.ReadLine();
+            //    return;
+            //}
+            //StreamReader file = new StreamReader(filename+".SWE");
+            //Console.WriteLine();
+            while ((line = Console.In.ReadLine()) != null)
             {
                 switch (linecounter)
                 {
@@ -43,8 +43,10 @@ namespace SWE_Decoder
                         }
                         catch
                         {
-                            Console.WriteLine("k was not a number");
-                            Console.Read();
+                            //Console.WriteLine("k was not a number");
+                            //Console.Read();
+                            Console.Out.WriteLine("NO");
+                            Console.Out.Close();
                             return;
                         }
                         break;
@@ -53,7 +55,7 @@ namespace SWE_Decoder
                             s = line;
                         else
                         {
-                            Console.WriteLine("s contained letters not in Sigma");
+                            //Console.WriteLine("s contained letters not in Sigma");
                             errorCounter++;
                         }
                         break;
@@ -64,12 +66,12 @@ namespace SWE_Decoder
                                 t.Add(line);
                             else
                             {
-                                Console.WriteLine("wrong input reading t at line: " + linecounter);
+                                //Console.WriteLine("wrong input reading t at line: " + linecounter);
                                 errorCounter++;
                             }
                             if (i + 1 < k)
                             {
-                                line = file.ReadLine();
+                                line = Console.In.ReadLine();//file.ReadLine();
                                 linecounter++;
                             }
                         }
@@ -78,7 +80,7 @@ namespace SWE_Decoder
                         Char GammaChar = line.ElementAt(0);
                         if (Regex.Match(GammaChar.ToString(), "[A-Z]").Length == 0)
                         {
-                            Console.WriteLine("Dictionary key invalid at line: " + linecounter + k);
+                            //Console.WriteLine("Dictionary key invalid at line: " + linecounter + k);
                             errorCounter++;
                         }
                         String SigmaWords = line.Substring(2);
@@ -98,19 +100,34 @@ namespace SWE_Decoder
                 linecounter++;
             }
             
-            file.Close();
+            //file.Close();
+            Console.In.Close();
 
-            ProblemInstance pi = new ProblemInstance(k,s,t,Expansion1);
+            ProblemInstance pi = new ProblemInstance(k, s, t, Expansion1);
 
-            Console.WriteLine(pi.ToString());
-            
-            Console.WriteLine("numbers of errors found: "+errorCounter);
-            Console.WriteLine();
-            Console.WriteLine("press enter to exit, or t+enter to test the file");
-            string userSelection = Console.ReadLine();
-
-            if (userSelection != "t")
+            //test code for CodeJudge
+            //StreamWriter sw = new StreamWriter(@".\Files.txt");
+            if (errorCounter > 0)
+            {
+                //sw.AutoFlush = true;
+                //Console.SetOut(sw);
+                Console.Out.Close();
+                Console.Out.WriteLine("NO");
+                Console.Out.Close();
                 return;
+            }
+            //END OF test code for CodeJudge
+
+
+            //Console.WriteLine(pi.ToString());
+            
+            //Console.WriteLine("numbers of errors found: "+errorCounter);
+            //Console.WriteLine();
+            //Console.WriteLine("press enter to exit, or t+enter to test the file");
+            //string userSelection = Console.ReadLine();
+
+            //if (userSelection != "t")
+            //    return;
 
             //algo(pi);
             //recursive(pi.t.First(), pi.Expansion1);
@@ -122,9 +139,20 @@ namespace SWE_Decoder
             ////assignment.Add('E', "e");
             //Console.WriteLine(pi.Validate(assignment));
 
-            Console.ReadLine();
+            //Console.ReadLine();
 
 
+            //test code for CodeJudge
+            //sw = new StreamWriter(@".\Files.txt");
+            //sw.AutoFlush = true;
+            //Console.SetOut(sw);
+            Console.Out.WriteLine("A:a");
+            Console.Out.WriteLine("B:b");
+            Console.Out.WriteLine("C:c");
+            Console.Out.WriteLine("D:d");
+            Console.Out.WriteLine("E:dd");
+            Console.Out.Close();
+            //END OF test code for CodeJudge
             
         }
 
