@@ -137,9 +137,9 @@ namespace SWE_Decoder
             //1:lav liste med alle store bogstaver der optræder i t
             List<Char> GammaChars = ExtractGammaChars(ppi);
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi))
+            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi,GammaChars))
             {
-                if (ppi.validate(translation)) return translation;
+                if (ppi.Validate(translation) == "YES") return translation;
             }
             return null;
             //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
@@ -156,9 +156,12 @@ namespace SWE_Decoder
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse
         }
 
-        private static Dictionary<char, string> FindInterestingTranslations(ProblemInstance ppi)
+        private static List<Dictionary<Char, String>> FindInterestingTranslations(ProblemInstance pi, List<Char> GammaChars)
         {
-            throw new NotImplementedException();
+            List<Dictionary<Char, String>> output = new List<Dictionary<char, string>>();
+            // HACK: Brute Force Approach
+
+            return output;
         }
 
         private static List<Char> ExtractGammaChars(ProblemInstance pi)
