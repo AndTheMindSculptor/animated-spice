@@ -179,13 +179,13 @@ namespace SWE_Decoder
 
         private static ProblemInstance Preprocess(ProblemInstance pi)
         {
-            ProblemInstance ppi, pppi;
-            //  TODO: add preprocessing
+            ProblemInstance ppi;
             ppi = Prune(pi);
             if (ppi == null)
                 return null;
-            pppi = PatternMatch(ppi);
-            return pppi;
+            if (!PatternMatch(ppi))
+                return null;
+            return ppi;
         }
 
         private static ProblemInstance Prune(ProblemInstance pi)
@@ -208,12 +208,28 @@ namespace SWE_Decoder
             return ppi;
         }
 
-        private static ProblemInstance PatternMatch(ProblemInstance pi)
+        private static bool PatternMatch(ProblemInstance pi)
         {
-            Dictionary<Char, List<String>> prunedexp = new Dictionary<char, List<string>>();
-            //  TODO: pattern match here
-            ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
-            return ppi;
+            if (pi == null)
+                return false;
+
+            MatchCollection tmc = new MatchCollection();
+            //  TODO: add pattern matching here
+
+            MatchCollection smc = Regex.Matches(pi.s, "lav en collection af patterns af formen såsom aa, aaa, a*a (wildcard * må kun være et bogstav)");
+
+            foreach (String test in pi.t)
+            {
+                if ((tmc = Regex.Matches(test, "find et pattern såsom AA, AAA, A*A (wildcard * må kun være et bogstav)")).Count > 0)
+                {
+                    foreach(Match m in tmc)
+                    {
+                        //hvis pattern ikke findes i smc => return false
+                    }
+                }
+            }
+
+            return true;
         }
 
         private static void algo(ProblemInstance pi)
