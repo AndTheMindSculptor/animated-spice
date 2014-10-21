@@ -114,8 +114,17 @@ namespace SWE_Decoder
 
             //algo(pi);
             //recursive(pi.t.First(), pi.Expansion1);
+            //Dictionary<Char,String> assignment = new Dictionary<Char,String>();
+            //assignment.Add('A', "b");
+            //assignment.Add('B', "d");
+            //assignment.Add('C', "d");
+            ////assignment.Add('D', "d");
+            ////assignment.Add('E', "e");
+            //Console.WriteLine(pi.Validate(assignment));
 
             Console.ReadLine();
+
+
             
         }
 
@@ -140,8 +149,8 @@ namespace SWE_Decoder
 
 
             //a.1: 
-            //      findes oversættelsen i s (s=sdsdsd oversættelse: A=q -> skip fordi q ikke findes i s)
-            //      
+            //      findes oversættelsen i s (s=sdsdsd oversættelse: A=q -> skip fordi q ikke findes i s)  (pruning)
+            //      lav pattern matching. Tjek om patterns såsom AA, AAA, A*A findes i s
 
 
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse

@@ -10,15 +10,43 @@ namespace SWE_Decoder
     {
         public int k = 0;
         public String s = "";//lowercase only
-        public List<String> t = new List<string>();//both lower- and uppercase
-        public Dictionary<Char, List<String>> Expansion1 = new Dictionary<char, List<string>>();
+        public List<String> t = new List<String>();//both lower- and uppercase
+        public Dictionary<Char, List<String>> Expansion1 = new Dictionary<Char, List<String>>();
 
-        public ProblemInstance(int k, string s, List<string> t, Dictionary<char, List<string>> Expansion1)
+        public ProblemInstance(int k, String s, List<String> t, Dictionary<Char, List<String>> Expansion1)
         {
             this.k = k;
             this.s = s;
             this.t = t;
             this.Expansion1 = Expansion1;
+        }
+
+        public String Validate(Dictionary<Char,String> assignment)
+        {
+            List<String> newt = new List<String>();
+            String newString = "";
+
+            foreach (String testt in t)
+            {
+                foreach (Char c in testt)
+                {
+                    if (Char.IsUpper(c))
+                    {
+                        if (!assignment.ContainsKey(c))
+                            return "the given assignment does not contain translation for "+c;
+                        newString = String.Concat(newString, assignment[c]);
+                    }
+                    else
+                        newString = String.Concat(newString, c.ToString());
+                }
+                if (!s.Contains(newString))
+                    return "the given assignment generated the string "+newString+" from "+testt+", which is not a substring of s.";
+
+                newt.Add(newString);
+                newString = "";
+            }
+
+            return "YES";
         }
 
         public override string ToString()
