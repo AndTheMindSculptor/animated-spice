@@ -123,9 +123,22 @@ namespace SWE_Decoder
 
         private static void newAlgo() //<-- use this approach
         {
+            //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
+
             //1:lav liste med alle store bogstaver der optræder i t
 
-            //2:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
+            //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
+
+            //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
+
+
+
+
+
+            //a.1: 
+            //      findes oversættelsen i s (s=sdsdsd oversættelse: A=q -> skip fordi q ikke findes i s)
+            //      
+
 
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse
         }
