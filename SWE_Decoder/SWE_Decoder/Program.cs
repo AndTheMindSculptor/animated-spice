@@ -13,7 +13,7 @@ namespace SWE_Decoder
         static void Main(string[] args)
         {
             Console.Title = "SWE Decoder";
-            Console.SetWindowSize(50, 50);
+            Console.SetWindowSize(100, 50);
 
             int k = 0;
             String s = "";//lowercase only
@@ -30,7 +30,7 @@ namespace SWE_Decoder
                 Console.ReadLine();
                 return;
             }
-            StreamReader file = new StreamReader(filename+".SWE"); 
+            StreamReader file = new StreamReader(filename+".SWE");
             Console.WriteLine();
             while ((line = file.ReadLine()) != null)
             {
@@ -111,41 +111,51 @@ namespace SWE_Decoder
 
             if (userSelection != "t")
                 return;
+            
 
-            //algo(pi);
-            //recursive(pi.t.First(), pi.Expansion1);
-            //Dictionary<Char,String> assignment = new Dictionary<Char,String>();
-            //assignment.Add('A', "b");
-            //assignment.Add('B', "d");
-            //assignment.Add('C', "d");
-            ////assignment.Add('D', "d");
-            ////assignment.Add('E', "e");
-            //Console.WriteLine(pi.Validate(assignment));
+            String resultString1, resultString2;
+            resultString1 = newAlgo(pi);
 
+            if (resultString1.Contains("Fatal"))
+                Console.WriteLine(resultString1);
+            else if (resultString1 == "NO")
+                Console.WriteLine("NO");
+            else
+            {
+                resultString2 = resultString1.Substring(3);
+                resultString1 = resultString1.Substring(0, 3);
+                Console.WriteLine(resultString1);
+                Console.WriteLine(resultString2);
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("press enter to exit");
             Console.ReadLine();
-
-
             
         }
 
-
-
-        private static Dictionary<Char,String> newAlgo(ProblemInstance pi) //<-- use this approach
+        private static String newAlgo(ProblemInstance pi) //<-- use this approach
         {
             //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
-            ProblemInstance ppi = Preprocess(pi);// TODO Hvis denne returner null så return NO (kan ske hvis f.eks. A kun kan expandes til noget som ikke er i s)
-            //1:lav liste med alle store bogstaver der optræder i t
-            List<Char> GammaChars = ExtractGammaChars(ppi);
+            ProblemInstance ppi = Preprocessing(pi);
+            if (ppi == null)
+                return "NO"; //if preprocessing fails (example: "A" can only be expanded to 'q', and s = "cdcdcdcd") the main function should return "NO"
+            String validationResult = "";
+            bool noInterestingFound = true;
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi,GammaChars))
+            foreach(Dictionary<Char,String> translation in FindInterestingTranslations(ppi))
             {
-                if (ppi.Validate(translation) == "YES") return translation;
+                validationResult = ppi.Validate(translation);
+                if (validationResult == "YES")
+                    return "YES" + translation;
+                else
+                    noInterestingFound = false; //return "NOO" + validationResult;
             }
-            return null;
+            if (noInterestingFound)
+                return "Fatal error! No interesting translations found!";
+            else
+                return "NO";
             //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
-
-
-
 
 
             //a.1: 
@@ -156,40 +166,53 @@ namespace SWE_Decoder
             //3:for hver dictionary fra 2 se om alle t er substrings af s, ved at følge den givne oversættelse
         }
 
-        private static List<Dictionary<Char, String>> FindInterestingTranslations(ProblemInstance pi, List<Char> GammaChars)
+        private static List<Dictionary<Char, String>> FindInterestingTranslations(ProblemInstance pi)
         {
-            List<Dictionary<Char, String>> output = new List<Dictionary<char, string>>();
+            Console.WriteLine("Starting \"Findings translations\"");
+            List<Dictionary<char, string>> output = new List<Dictionary<char, string>>();
+            List<Dictionary<char, string>> buffer;
+            output.Add(new Dictionary<char,string>());
             // HACK: Brute Force Approach
-
+            // TODO: denne funktion bruger kæmpe mængder memory (RAM)
+            foreach(KeyValuePair<char,List<string>> kvp in pi.Expansion1)
+            {
+                buffer = new List<Dictionary<char, string>>();
+                foreach (string s in kvp.Value)
+                {
+                    foreach (Dictionary<char, string> dict in output)
+                    {
+                        Dictionary<char, string> newdict = CloneDict(dict);
+                        newdict.Add(kvp.Key, s);
+                        buffer.Add(newdict);
+                    }
+                }
+                output = buffer;
+            }
+            Console.WriteLine("Ending \"Findings translations\"");
             return output;
         }
 
-        private static List<Char> ExtractGammaChars(ProblemInstance pi)
+        private static ProblemInstance Preprocessing(ProblemInstance pi)
         {
-            String output = "";
-            foreach (String s in pi.t)
-            {
-                foreach (Char c in s)
-                {
-                    if (IsCapital(c) && !output.Contains(c)) output += c;
-                }
-            }
-            return output.ToList<Char>();
-        }
-
-        private static ProblemInstance Preprocess(ProblemInstance pi)
-        {
+            Console.WriteLine("Starting \"Preprocessing\"");
             ProblemInstance ppi;
             ppi = Prune(pi);
+            Console.WriteLine("Ending \"Pruning\"");
             if (ppi == null)
                 return null;
-            if (!PatternMatch(ppi))
-                return null;
+            //if (PatternMatchingsNotFound(ppi))
+            //    return null;
+            // TODO: tjek på længden af translations vs længden af s
+            // TODO: man kunne ligge permutations med meget lange translation bagerst så de bliver forsøgt validated sidst? (de er for det meste forkerte?)
+            Console.WriteLine("Ending \"Pattern Mathcing\"");
+            Console.WriteLine("Ending \"Preprocessing\"");
             return ppi;
         }
 
+        #region preprocessing functions
         private static ProblemInstance Prune(ProblemInstance pi)
         {
+            Console.WriteLine("Starting \"Pruning\"");
             Dictionary<Char, List<String>> prunedexp = new Dictionary<Char, List<String>>();
             List<String> prunedExpStrings = new List<String>();
             foreach (KeyValuePair<Char, List<String>> kvp in pi.Expansion1)
@@ -208,13 +231,14 @@ namespace SWE_Decoder
             return ppi;
         }
 
-        private static bool PatternMatch(ProblemInstance pi)
+        private static bool PatternMatchingsNotFound(ProblemInstance pi)
         {
+            Console.WriteLine("Starting \"Pattern Mathcing\"");
             if (pi == null)
                 return false;
 
-            MatchCollection tmc = new MatchCollection();
-            //  TODO: add pattern matching here
+            MatchCollection tmc;
+            //  TODO: add pattern matchings here
 
             MatchCollection smc = Regex.Matches(pi.s, "lav en collection af patterns af formen såsom aa, aaa, a*a (wildcard * må kun være et bogstav)");
 
@@ -222,132 +246,29 @@ namespace SWE_Decoder
             {
                 if ((tmc = Regex.Matches(test, "find et pattern såsom AA, AAA, A*A (wildcard * må kun være et bogstav)")).Count > 0)
                 {
-                    foreach(Match m in tmc)
+                    foreach (Match m in tmc)
                     {
-                        //hvis pattern ikke findes i smc => return false
+                        //hvis pattern ikke findes i smc => return true
                     }
                 }
             }
 
-            return true;
+            return false;//all patterns in t's also exists in s
         }
+        #endregion
 
-        private static void algo(ProblemInstance pi)
-        {
-
-        }
-
-        private static void recursive(List<String> t, Dictionary<Char,Char> assignment, Dictionary<Char,List<String>> exp)
-        {
-            int whichString = -1, whichChar = -1;
-            #region find index of a capital letter
-            int stringCounter=0, charCounter=0;
-            foreach (String s in t)
-            {
-                foreach (char c in s)
-                {
-                    if (IsCapital(c))
-                    {
-                        whichChar = charCounter;
-                        whichString = stringCounter;
-                        break;
-                    }
-                    charCounter++;
-                }
-                if (whichChar != -1)
-                    break;
-                stringCounter++;
-            }
-            #endregion
-            
-            //getting the letter
-            char foundCapitalLetter = t[whichString].ElementAt(whichChar);
-
-            //getting the expansions of the letter
-            List<String> expansions = exp[foundCapitalLetter];
-
-            foreach (String str in expansions)
-            {
-                //replace each instance of the chosen capital letter in all strings in t
-                //with each possible expansion
-            }
-        }
-
+        #region helper functions
         private static bool IsCapital(char c)
         {
             return Regex.Match(c.ToString(),"[A-Z]").Length == 1;
         }
 
-    //    private static void algo(ProblemInstance pi)
-    //    {
-    //        bool answerIsYes = true;
-    //        List<List<String>> perms = new List<List<string>>();
-    //        foreach(String t in pi.t)
-    //        {
-    //            perms.Add(recursive(t,pi.Expansion1));
-    //        }
-    //        bool validPermFound;
-    //        foreach (List<String> ls in perms)
-    //        {
-    //            validPermFound = false;
-    //            foreach (String str in ls)
-    //            {
-    //                if (pi.s.Contains(str))
-    //                {
-    //                    validPermFound = true;
-    //                    break;
-    //                }
-    //            }
-    //            if (validPermFound == false)
-    //            {
-    //                answerIsYes = false;
-    //                break;
-    //            }
-    //        }
-
-    //        if (answerIsYes)
-    //            Console.WriteLine("YES");
-    //        else
-    //            Console.WriteLine("NO");
-    //    }
-
-    //    private static List<String> recursive(String t, Dictionary<Char, List<String>> exp)
-    //    {
-            
-    //        List<String> output = new List<string>();
-    //        Char head = t.ElementAt(0);
-    //        String tail = t.Substring(1);
-    //        if(Regex.Match(head.ToString(),"[A-Z]").Length > 0)
-    //        {
-                
-    //            foreach(String translation in exp[head])
-    //            {
-    //                if (tail.Length == 0)
-    //                {
-    //                    output.Add(translation);
-    //                }
-    //                else
-    //                {
-    //                    List<String> Substrings = recursive(tail,exp);
-    //                    foreach(String rest in Substrings) output.Add(translation+rest);
-    //                }
-    //                //
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (tail.Length == 0)
-    //            {
-    //                output.Add(head.ToString());
-    //            }
-    //            else
-    //            {
-    //                List<String> Substrings = recursive(tail,exp);
-    //                foreach(String rest in Substrings) output.Add(head+rest);
-    //            }
-    //        }
-    //        return output;
-
-    //    }
+        private static Dictionary<char, string> CloneDict(Dictionary<char, string> dict)
+        {
+            Dictionary<char, string> newdict = new Dictionary<char, string>();
+            foreach (KeyValuePair<char, string> kvp in dict) newdict.Add(kvp.Key, kvp.Value);
+            return newdict;
+        }
+        #endregion
     }
 }
