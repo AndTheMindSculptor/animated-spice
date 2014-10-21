@@ -30,7 +30,7 @@ namespace SWE_Decoder
                 Console.ReadLine();
                 return;
             }
-            StreamReader file = new StreamReader(filename+".SWE");//hard-coded file name   
+            StreamReader file = new StreamReader(filename+".SWE"); 
             Console.WriteLine();
             while ((line = file.ReadLine()) != null)
             {
@@ -133,7 +133,7 @@ namespace SWE_Decoder
         private static Dictionary<Char,String> newAlgo(ProblemInstance pi) //<-- use this approach
         {
             //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
-            ProblemInstance ppi = Preprocess(pi);
+            ProblemInstance ppi = Preprocess(pi);// TODO Hvis denne returner null så return NO (kan ske hvis f.eks. A kun kan expandes til noget som ikke er i s)
             //1:lav liste med alle store bogstaver der optræder i t
             List<Char> GammaChars = ExtractGammaChars(ppi);
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
@@ -179,16 +179,39 @@ namespace SWE_Decoder
 
         private static ProblemInstance Preprocess(ProblemInstance pi)
         {
-            ProblemInstance ppi;
-            //  TODO: add preprocesses
+            ProblemInstance ppi, pppi;
+            //  TODO: add preprocessing
             ppi = Prune(pi);
-            return ppi;
+            if (ppi == null)
+                return null;
+            pppi = PatternMatch(ppi);
+            return pppi;
         }
 
         private static ProblemInstance Prune(ProblemInstance pi)
         {
+            Dictionary<Char, List<String>> prunedexp = new Dictionary<Char, List<String>>();
+            List<String> prunedExpStrings = new List<String>();
+            foreach (KeyValuePair<Char, List<String>> kvp in pi.Expansion1)
+            {
+                foreach (String exp in kvp.Value)
+                {
+                    if (pi.s.Contains(exp))
+                        prunedExpStrings.Add(exp);
+                }
+                if (prunedExpStrings.Count < 1)
+                    return null;
+                prunedexp.Add(kvp.Key, prunedExpStrings);
+                prunedExpStrings = new List<String>();
+            }
+            ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
+            return ppi;
+        }
+
+        private static ProblemInstance PatternMatch(ProblemInstance pi)
+        {
             Dictionary<Char, List<String>> prunedexp = new Dictionary<char, List<string>>();
-            //  TODO: prune here
+            //  TODO: pattern match here
             ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
             return ppi;
         }
