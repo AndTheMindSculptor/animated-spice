@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE_Decoder
+namespace SWE_Decoder.AlgoLib
 {
-    public class Algo1
+    public class BruteForceAlgorithm1
     {
-        public static string Run(ProblemInstance ppi)
+        public static string Run(ProblemInstance pi)
         {
             bool noInterestingFound = true;
             String validationResult = "";
-            foreach (Dictionary<Char, String> translation in FindInterestingTranslations(ppi))
+            List<Dictionary<Char, String>> translations = FindInterestingTranslations(pi);
+            foreach (Dictionary<Char, String> translation in translations)
             {
-                validationResult = ppi.Validate(translation);
+                validationResult = pi.Validate(translation);
                 if (validationResult == "YES")
                     return "YES" + translation.ToPrintFormat();
                 else
@@ -34,7 +35,7 @@ namespace SWE_Decoder
             List<Dictionary<char, string>> buffer;
             Dictionary<char, string> newdict;
             output.Add(new Dictionary<char, string>());
-            // TODO: denne funktion bruger kæmpe mængder memory (RAM)
+            // TODO: denne funktion bruger kæmpe mængder memory (RAM) og ender med at smide Out of Memory Exception hvis ikke computeren fryser først
             foreach (KeyValuePair<char, List<string>> kvp in pi.Expansion1)
             {
                 buffer = new List<Dictionary<char, string>>();

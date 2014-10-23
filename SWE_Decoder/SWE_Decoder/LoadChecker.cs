@@ -21,18 +21,20 @@ namespace SWE_Decoder
             Dictionary<Char, List<String>> Expansion1 = new Dictionary<char, List<string>>();
             ProblemInstance pi;
 
-            string line = "";
+            string line = "", filename = "";
+            bool fileNotFound = true;
             int linecounter = 0, errorCounter = 0;
 
             if (useConsole)
             {
-                Console.WriteLine("input name of file (without extension)");
-                string filename = Console.ReadLine();
-                if (!File.Exists(filename + ".SWE"))
+                while (fileNotFound)
                 {
-                    Console.WriteLine("file not found!");
-                    Console.ReadLine();
-                    return null;
+                    Console.WriteLine("input name of file (without extension)");
+                    filename = Console.ReadLine();
+                    if (!File.Exists(filename + ".SWE"))
+                        Console.WriteLine("file not found!");
+                    else
+                        fileNotFound = false;
                 }
                 file = new StreamReader(filename + ".SWE");
                 Console.WriteLine();

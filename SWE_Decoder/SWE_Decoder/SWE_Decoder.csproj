@@ -41,8 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algo1.cs" />
-    <Compile Include="Algo2.cs" />
+    <Compile Include="BruteForceAlgorithm1.cs" />
+    <Compile Include="BruteForceAlgorithm2.cs" />
+    <Compile Include="BruteForceAlgorithm3.cs" />
+    <Compile Include="BruteForceAlgorithm4.cs" />
+    <Compile Include="BruteForceAlgorithm5.cs" />
     <Compile Include="LoadChecker.cs" />
     <Compile Include="ProblemInstance.cs" />
     <Compile Include="Program.cs" />

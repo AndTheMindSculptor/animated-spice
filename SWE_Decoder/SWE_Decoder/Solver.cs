@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SWE_Decoder.AlgoLib;
 
 namespace SWE_Decoder
 {
@@ -23,7 +24,7 @@ namespace SWE_Decoder
             }
 
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-            return Algo1.Run(ppi);
+            return BruteForceAlgorithm5.Run(ppi);
             //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
 
 

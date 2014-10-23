@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE_Decoder
+namespace SWE_Decoder.AlgoLib
 {
-    public class Algo2
+    public class BruteForceAlgorithm2
     {
         private static List<Dictionary<Char, String>> Translations;
         private static ProblemInstance givenProblem;
 
-        public static string run(ProblemInstance ppi)
+        public static string Run(ProblemInstance pi)
         {
             // denne funktion virker ikke pga ændring i collection under foreach (i recursion)
             String validationResult = "";
-            StartAddingPermutations(ppi);
+            StartAddingPermutations(pi);
             bool noInterestingFound = true;
             foreach (Dictionary<Char, String> translation in Translations)
             {
-                validationResult = ppi.Validate(translation);
+                validationResult = pi.Validate(translation);
                 if (validationResult == "YES")
                     return "YES" + translation.ToPrintFormat();
                 else
