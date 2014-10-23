@@ -75,7 +75,7 @@ namespace SWE_Decoder
                             else
                             {
                                 if (useConsole)
-                                    Console.WriteLine("wrong input reading t at line: " + linecounter);
+                                    Console.WriteLine("wrong input reading a t at line: " + linecounter);
                                 errorCounter++;
                             }
                             if (i + 1 < k)
@@ -86,6 +86,12 @@ namespace SWE_Decoder
                         }
                         break;
                     default:
+                        if (line.Length < 3 || line.ElementAt(1) != ':')
+                        {
+                            if (useConsole)
+                                Console.WriteLine("Expected translation but was of the wrong format. Possible incorrect k value.");
+                            return null;
+                        }
                         Char GammaChar = line.ElementAt(0);
                         if (Regex.Match(GammaChar.ToString(), "[A-Z]").Length == 0)
                         {
@@ -118,10 +124,14 @@ namespace SWE_Decoder
 
             if (useConsole)
             {
-                Console.WriteLine(pi.ToString());
+                Console.WriteLine(pi.ToString(false));
                 Console.WriteLine("numbers of errors found: " + errorCounter);
                 Console.WriteLine();
             }
+
+            if (errorCounter > 0)
+                pi = null;
+
             return pi;
         }
 

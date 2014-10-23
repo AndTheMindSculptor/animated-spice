@@ -51,26 +51,35 @@ namespace SWE_Decoder
 
         public override string ToString()
         {
+            return this.ToString(false);
+        }
+        public string ToString(bool verbose)
+        {
             string ret = "";
 
-            ret = String.Concat(ret, "k: "+k+"\n");
-            ret = String.Concat(ret, "s: " + s + "\n");
-            int count = 0, innercount = 0;
+            ret = String.Concat(ret, "1.   k: "+k+"\n");
+            ret = String.Concat(ret, "2.   s: " + s + "\n");
+            int count = 0, innercount = 0, countOld = 0;
             foreach (String tString in t)
             {
-                ret = String.Concat(ret, "t"+count+": " + tString + "\n");
+                ret = String.Concat(ret, ""+(count+2)+".   t" + count + ": " + tString + "\n");
                 count++;
             }
+            countOld = count;
             count = 0;
             foreach (KeyValuePair<Char, List<String>> kvp in Expansion1)
             {
-                ret = String.Concat(ret, "gamma" + count + ": " + kvp.Key + "\n");
-                foreach (String sSigma in kvp.Value)
+                ret = String.Concat(ret, "" + (countOld + count + 2) + ".   gamma" + count + ": " + kvp.Key + "\n");
+                if (verbose)
                 {
-                    ret = String.Concat(ret, "---sigma expansion" + innercount + ": " + sSigma + "\n");
-                    innercount++;
+                    foreach (String sSigma in kvp.Value)
+                    {
+                        ret = String.Concat(ret, "---sigma expansion" + innercount + ": " + sSigma + "\n");
+                        innercount++;
+                    }
+                    innercount = 0;
                 }
-                innercount = 0;
+                count++;
             }
 
             return ret;

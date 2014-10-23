@@ -20,15 +20,27 @@ namespace SWE_Decoder
 
                 pi = LoadChecker.LoadAndCheckConsole();
                 if (pi == null)
+                {
+                    Console.WriteLine("NO");
+                    Console.WriteLine("press enter to exit");
+                    Console.ReadLine();
                     return;
+                }
                 Console.WriteLine("press enter to exit, or t+enter to test the file");
                 userSelection = Console.ReadLine();
 
                 if (userSelection != "t")
-                    return;           
+                    return;
             }
             else
+            {
                 pi = LoadChecker.LoadAndCheckStandardInOut();
+                if (pi == null)
+                {
+                    Console.Out.WriteLine("NO");
+                    return;
+                }
+            }
             
                         
             resultString1 = Solver.BruteForce(pi,true);
