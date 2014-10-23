@@ -135,6 +135,7 @@ namespace SWE_Decoder
             return pi;
         }
 
+        #region helpers
         public static ProblemInstance LoadAndCheckConsole()
         {
             return LoadAndCheck(true);
@@ -151,5 +152,6 @@ namespace SWE_Decoder
             else
                 return standardIn.ReadLine();
         }
+        #endregion
     }
 }

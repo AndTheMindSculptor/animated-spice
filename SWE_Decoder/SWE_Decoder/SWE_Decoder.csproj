@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algo1.cs" />
+    <Compile Include="Algo2.cs" />
     <Compile Include="LoadChecker.cs" />
     <Compile Include="ProblemInstance.cs" />
     <Compile Include="Program.cs" />
