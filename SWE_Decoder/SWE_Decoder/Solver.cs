@@ -9,12 +9,16 @@ namespace SWE_Decoder
 {
     public class Solver
     {
-        public static String newAlgo(ProblemInstance pi) //<-- use this approach
+        public static String BruteForce(ProblemInstance pi, bool usePreproc) 
         {
-            //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
-            ProblemInstance ppi = Preprocessing(pi);
-            if (ppi == null)
-                return "NO"; //if preprocessing fails (example: "A" can only be expanded to 'q', and s = "cdcdcdcd") the main function should return "NO"
+            ProblemInstance ppi = pi;
+            if (usePreproc)
+            {
+                //0:preprocessing - brug en række hurtige algoritmer til muligvis at falsificere
+                ppi = Preprocessing(pi);
+                if (ppi == null)
+                    return "NO"; //if preprocessing fails (example: "A" can only be expanded to 'q', and s = "cdcdcdcd") the main function should return "NO"
+            }
             String validationResult = "";
             bool noInterestingFound = true;
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)

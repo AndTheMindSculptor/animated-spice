@@ -6,40 +6,57 @@ namespace SWE_Decoder
 {
     class Program
     {
+        private static const bool useConsole = true;
+
         static void Main(string[] args)
         {
-            Console.Title = "SWE Decoder"; 
-            Console.SetWindowSize(100, 50);
+            ProblemInstance pi;
+            String resultString1, resultString2, userSelection;
 
-            ProblemInstance pi = LoadChecker.LoadAndCheck();
-            if (pi == null)
-                return;
+            if (useConsole)
+            {
+                Console.Title = "SWE Decoder";
+                Console.SetWindowSize(100, 50);
 
-            Console.WriteLine("press enter to exit, or t+enter to test the file");
-            string userSelection = Console.ReadLine();
+                pi = LoadChecker.LoadAndCheckConsole();
+                if (pi == null)
+                    return;
+                Console.WriteLine("press enter to exit, or t+enter to test the file");
+                userSelection = Console.ReadLine();
 
-            if (userSelection != "t")
-                return;            
+                if (userSelection != "t")
+                    return;           
+            }
+            else
+                pi = LoadChecker.LoadAndCheckStandardInOut();
 
-            String resultString1, resultString2;
-            resultString1 = Solver.newAlgo(pi);
+            
+                        
+            resultString1 = Solver.BruteForce(pi,true);
 
-            if (resultString1.Contains("Fatal"))
-                Console.WriteLine(resultString1);
-            else if (resultString1 == "NO")
-                Console.WriteLine("NO");
+
+            if (useConsole)
+            {
+                if (resultString1.Contains("Fatal"))
+                    Console.WriteLine(resultString1);
+                else if (resultString1 == "NO")
+                    Console.WriteLine("NO");
+                else
+                {
+                    resultString2 = resultString1.Substring(3);
+                    resultString1 = resultString1.Substring(0, 3);
+                    Console.WriteLine(resultString1);
+                    Console.WriteLine(resultString2);
+                }
+
+                Console.WriteLine("");
+                Console.WriteLine("press enter to exit");
+                Console.ReadLine();
+            }
             else
             {
-                resultString2 = resultString1.Substring(3);
-                resultString1 = resultString1.Substring(0, 3);
-                Console.WriteLine(resultString1);
-                Console.WriteLine(resultString2);
+                //do code judge printout
             }
-
-            Console.WriteLine("");
-            Console.WriteLine("press enter to exit");
-            Console.ReadLine();
-            
         }
         
 

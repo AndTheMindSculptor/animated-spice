@@ -10,7 +10,10 @@ namespace SWE_Decoder
 {
     public class LoadChecker
     {
-        public static ProblemInstance LoadAndCheck()
+        private static StreamReader file = null;
+        private static TextReader standardIn = Console.In;
+
+        private static ProblemInstance LoadAndCheck(bool useConsole)
         {
             int k = 0;
             String s = "";//lowercase only
@@ -20,17 +23,22 @@ namespace SWE_Decoder
 
             string line = "";
             int linecounter = 0, errorCounter = 0;
-            Console.WriteLine("input name of file (without extension)");
-            string filename = Console.ReadLine();
-            if (!File.Exists(filename + ".SWE"))
+
+            if (useConsole)
             {
-                Console.WriteLine("file not found!");
-                Console.ReadLine();
-                return null;
+                Console.WriteLine("input name of file (without extension)");
+                string filename = Console.ReadLine();
+                if (!File.Exists(filename + ".SWE"))
+                {
+                    Console.WriteLine("file not found!");
+                    Console.ReadLine();
+                    return null;
+                }
+                file = new StreamReader(filename + ".SWE");
+                Console.WriteLine();
             }
-            StreamReader file = new StreamReader(filename + ".SWE");
-            Console.WriteLine();
-            while ((line = file.ReadLine()) != null)
+
+            while ((line = ReadLine(useConsole)) != null)
             {
                 switch (linecounter)
                 {
@@ -41,8 +49,11 @@ namespace SWE_Decoder
                         }
                         catch
                         {
-                            Console.WriteLine("k was not a number");
-                            Console.Read();
+                            if (useConsole)
+                            {
+                                Console.WriteLine("k was not a number");
+                                Console.Read();
+                            }
                             return null;
                         }
                         break;
@@ -51,7 +62,8 @@ namespace SWE_Decoder
                             s = line;
                         else
                         {
-                            Console.WriteLine("s contained letters not in Sigma");
+                            if (useConsole)
+                                Console.WriteLine("s contained letters not in Sigma");
                             errorCounter++;
                         }
                         break;
@@ -62,12 +74,13 @@ namespace SWE_Decoder
                                 t.Add(line);
                             else
                             {
-                                Console.WriteLine("wrong input reading t at line: " + linecounter);
+                                if (useConsole)
+                                    Console.WriteLine("wrong input reading t at line: " + linecounter);
                                 errorCounter++;
                             }
                             if (i + 1 < k)
                             {
-                                line = file.ReadLine();
+                                line = ReadLine(useConsole);
                                 linecounter++;
                             }
                         }
@@ -76,7 +89,8 @@ namespace SWE_Decoder
                         Char GammaChar = line.ElementAt(0);
                         if (Regex.Match(GammaChar.ToString(), "[A-Z]").Length == 0)
                         {
-                            Console.WriteLine("Dictionary key invalid at line: " + linecounter + k);
+                            if (useConsole)
+                                Console.WriteLine("Dictionary key invalid at line: " + linecounter + k);
                             errorCounter++;
                         }
                         String SigmaWords = line.Substring(2);
@@ -85,7 +99,8 @@ namespace SWE_Decoder
                         {
                             if (Regex.Match(teststring, "[a-z]*").Length == 0)
                             {
-                                Console.WriteLine("Listvalue invalid at line: " + linecounter);
+                                if (useConsole)
+                                    Console.WriteLine("Listvalue invalid at line: " + linecounter);
                                 errorCounter++;
                             }
                         }
@@ -96,15 +111,35 @@ namespace SWE_Decoder
                 linecounter++;
             }
 
-            file.Close();
+            if (useConsole)
+                file.Close();
 
             pi = new ProblemInstance(k, s, t, Expansion1);
 
-            Console.WriteLine(pi.ToString());
-
-            Console.WriteLine("numbers of errors found: " + errorCounter);
-            Console.WriteLine();
+            if (useConsole)
+            {
+                Console.WriteLine(pi.ToString());
+                Console.WriteLine("numbers of errors found: " + errorCounter);
+                Console.WriteLine();
+            }
             return pi;
+        }
+
+        public static ProblemInstance LoadAndCheckConsole()
+        {
+            return LoadAndCheck(true);
+        }
+        public static ProblemInstance LoadAndCheckStandardInOut()
+        {
+            return LoadAndCheck(false);
+        }
+
+        private static string ReadLine(bool useConsole)
+        {
+            if (useConsole)
+                return file.ReadLine();
+            else
+                return standardIn.ReadLine();
         }
     }
 }
