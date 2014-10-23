@@ -6,7 +6,7 @@ namespace SWE_Decoder
 {
     class Program
     {
-        private static const bool useConsole = true;
+        private const bool useConsole = true;
 
         static void Main(string[] args)
         {
@@ -29,7 +29,6 @@ namespace SWE_Decoder
             }
             else
                 pi = LoadChecker.LoadAndCheckStandardInOut();
-
             
                         
             resultString1 = Solver.BruteForce(pi,true);
@@ -48,18 +47,19 @@ namespace SWE_Decoder
                     Console.WriteLine(resultString1);
                     Console.WriteLine(resultString2);
                 }
-
                 Console.WriteLine("");
                 Console.WriteLine("press enter to exit");
                 Console.ReadLine();
             }
             else
             {
-                //do code judge printout
+                Console.In.Close();
+                if (resultString1 == "NO" || resultString1.Contains("Fatal"))
+                    Console.Out.WriteLine("NO");
+                else
+                    Console.Out.WriteLine(resultString1.Substring(3));
+                Console.Out.Close();
             }
         }
-        
-
-        
     }
 }

@@ -26,7 +26,7 @@ namespace SWE_Decoder
             {
                 validationResult = ppi.Validate(translation);
                 if (validationResult == "YES")
-                    return "YES" + translation;
+                    return "YES" + translation.ToPrintFormat(); 
                 else
                     noInterestingFound = false; //return "NOO" + validationResult;
             }
@@ -50,9 +50,10 @@ namespace SWE_Decoder
             Console.WriteLine("Starting \"Findings translations\"");
             List<Dictionary<char, string>> output = new List<Dictionary<char, string>>();
             List<Dictionary<char, string>> buffer;
+            Dictionary<char, string> newdict;
             output.Add(new Dictionary<char, string>());
             // HACK: Brute Force Approach
-            // TODO: denne funktion bruger kæmpe mængder memory (RAM)
+            // TODO: denne funktion bruger kæmpe mængder memory (RAM) og virker ikke (se test0.swe, den har samme løsning som test00.swe)
             foreach (KeyValuePair<char, List<string>> kvp in pi.Expansion1)
             {
                 buffer = new List<Dictionary<char, string>>();
@@ -60,7 +61,7 @@ namespace SWE_Decoder
                 {
                     foreach (Dictionary<char, string> dict in output)
                     {
-                        Dictionary<char, string> newdict = CloneDict(dict);
+                        newdict = CloneDict(dict);
                         newdict.Add(kvp.Key, s);
                         buffer.Add(newdict);
                     }
@@ -149,5 +150,16 @@ namespace SWE_Decoder
             return newdict;
         }
         #endregion
+    }
+
+    public static class DictExtensions
+    {
+        public static String ToPrintFormat(this Dictionary<Char,String> dict)
+        {
+            String ret = "";
+            foreach(KeyValuePair<Char,String> kvp in dict)
+                ret += "" + kvp.Key + ":" + kvp.Value+"\n";
+            return ret;
+        }
     }
 }
