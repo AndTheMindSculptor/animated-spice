@@ -31,13 +31,13 @@ namespace SWE_Decoder.AlgoLib
                     {
                         currentlyChosenTranslation = possibleTranslations.ElementAt(currentIndexOf[j]);
                         translation.Add(pi.Expansion1.ElementAt(i).Key, currentlyChosenTranslation);
-                        if (translation.Count == numberOfGammas)
-                            validationResult = pi.Validate(translation);
+                        //if (translation.Count == numberOfGammas)
+                        //    validationResult = pi.Validate(translation);
                     }
                     currentIndexOf[i]++;
                 }
 
-                validationResult = pi.Validate(translation);
+                //validationResult = pi.Validate(translation);
 
                 if (validationResult == "YES")
                     return "YES" + translation.ToPrintFormat();

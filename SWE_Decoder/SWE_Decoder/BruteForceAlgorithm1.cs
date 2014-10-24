@@ -15,8 +15,7 @@ namespace SWE_Decoder.AlgoLib
             List<Dictionary<Char, String>> translations = FindInterestingTranslations(pi);
             foreach (Dictionary<Char, String> translation in translations)
             {
-                validationResult = pi.Validate(translation);
-                if (validationResult == "YES")
+                if (pi.Validate(translation))
                     return "YES" + translation.ToPrintFormat();
                 else
                     noInterestingFound = false;

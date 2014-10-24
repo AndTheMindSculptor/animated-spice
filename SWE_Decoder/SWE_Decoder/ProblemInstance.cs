@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SWE_Decoder
@@ -13,6 +14,9 @@ namespace SWE_Decoder
         public List<String> t = new List<String>();//both lower- and uppercase
         public Dictionary<Char, List<String>> Expansion1 = new Dictionary<Char, List<String>>();
 
+        public int ValidationCount = 0;
+        public int PartialValidationCount = 0;
+
         public ProblemInstance(int k, String s, List<String> t, Dictionary<Char, List<String>> Expansion1)
         {
             this.k = k;
@@ -21,10 +25,13 @@ namespace SWE_Decoder
             this.Expansion1 = Expansion1;
         }
 
-        public String Validate(Dictionary<Char,String> assignment)
+        public bool Validate(Dictionary<Char,String> assignment)
         {
-            List<String> newt = new List<String>();
             String newString = "";
+
+            ValidationCount++;
+            if (ValidationCount % 100000 == 0)
+                Console.WriteLine("validation count: " + ValidationCount);
 
             foreach (String testt in t)
             {
@@ -33,20 +40,52 @@ namespace SWE_Decoder
                     if (Char.IsUpper(c))
                     {
                         if (!assignment.ContainsKey(c))
-                            return "the given assignment does not contain translation for "+c;
+                            return false;// "the given assignment does not contain translation for " + c;
                         newString = String.Concat(newString, assignment[c]);
                     }
                     else
                         newString = String.Concat(newString, c.ToString());
                 }
                 if (!s.Contains(newString))
-                    return "the given assignment generated the string "+newString+" from "+testt+", which is not a substring of s.";
+                    return false;//"the given assignment generated the string "+newString+" from "+testt+", which is not a substring of s.";
 
-                newt.Add(newString);
                 newString = "";
             }
 
-            return "YES";
+            return true;//"YES";
+        }
+
+        public bool PartialValidate(Dictionary<Char, String> assignment)
+        {
+            String partialString = "";
+            int i;
+            HashSet<Char> CharToMakeWildcard = new HashSet<Char>();
+
+            PartialValidationCount++;
+            if (PartialValidationCount % 10 == 0)
+                Console.WriteLine("Partial validation count: " + PartialValidationCount);
+
+            foreach (String testt in t)
+            {
+                foreach (Char c in testt)
+                {
+                    if (Char.IsUpper(c))
+                    {
+                        if (assignment.ContainsKey(c))
+                            partialString = String.Concat(partialString, assignment[c]);
+                        else
+                            partialString = String.Concat(partialString, '.');
+                    }
+                    else
+                        partialString = String.Concat(partialString, c.ToString());
+                }
+                if (Regex.Match(s, partialString).Success == false)
+                    return false;
+
+                partialString = "";
+            }
+
+            return true;
         }
 
         public override string ToString()

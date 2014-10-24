@@ -8,29 +8,33 @@ namespace SWE_Decoder.AlgoLib
 {
     public class BruteForceAlgorithm5
     {
-        private static ProblemInstance Problem = null;
-        private static int[] CurrentIndexOf, MaxForIndex;
-        private static int NumberOfPerms = 0;
-        private static List<String> permStrings = new List<String>();
+        private const int GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM = 4;
+        private static int Partial_validate_delay = 0;
 
-        // TODO: Currently only works for "square" problems (if each gamma variable have as many translations as there is gamma variables). FIX IT
+        private static ProblemInstance Problem = null;
+        private static int[] CurrentIndexOf, MaxForIndex;        
+        private static bool ValidationFound = false;
+        private static Dictionary<Char, String> foundTranslation;
+
+                
         public static string Run(ProblemInstance pi)
         {
             Problem = pi;
 
             int numberOfGammas = Problem.Expansion1.Count();
-            int[] currentIndexOf = new int[numberOfGammas];
-            for (int i = 0; i < numberOfGammas; i++ )
-                currentIndexOf[i] = 0;
-            CurrentIndexOf = currentIndexOf;
 
-            int[] maxForIndex = new int[numberOfGammas];
+            CurrentIndexOf = new int[numberOfGammas];
+            for (int i = 0; i < numberOfGammas; i++ )
+                CurrentIndexOf[i] = 0;
+
+            MaxForIndex = new int[numberOfGammas];
             for (int i = 0; i < numberOfGammas; i++)
-                maxForIndex[i] = Problem.Expansion1.Values.Count();
-            MaxForIndex = maxForIndex;
+                MaxForIndex[i] = Problem.Expansion1.ElementAt(i).Value.Count();
 
             for (int i = 0; i < MaxForIndex[0]; i++)
             {
+                if (ValidationFound)
+                    return "YES" + foundTranslation.ToPrintFormat();
                 recurse(1);
                 CurrentIndexOf[0]++;
             }
@@ -38,26 +42,48 @@ namespace SWE_Decoder.AlgoLib
             return "NO";
         }
 
+
         private static void recurse(int nextCurrentIndex)
         {
-            string s;
+            if (ValidationFound)
+                return;
+
+            Dictionary<Char, String> translation;
             int counter;
             if (MaxForIndex.Length <= nextCurrentIndex)
                 return;
             for (int i = 0; i < MaxForIndex[nextCurrentIndex]; i++)
             {
+                translation = new Dictionary<Char, String>();
+                counter = 0;
                 if (nextCurrentIndex+1 == CurrentIndexOf.Length)
                 {
-                    s = "";
-                    counter = 0;
                     foreach (int j in CurrentIndexOf)
                     {
-                        s += Problem.Expansion1.ElementAt(counter).Value[j]+" ";
+                        translation.Add(Problem.Expansion1.ElementAt(counter).Key, Problem.Expansion1.ElementAt(counter).Value[j]);
                         counter++;
                     }
-                    permStrings.Add(s);
-                    NumberOfPerms++;
-                    //permStrings.Add(Problem.Expansion1.ElementAt(0).Value[CurrentIndexOf[0]] + " " + Problem.Expansion1.ElementAt(1).Value[CurrentIndexOf[1]] + " " + Problem.Expansion1.ElementAt(2).Value[CurrentIndexOf[2]]);//permStrings.Add(""+CurrentIndexOf[0]+" "+CurrentIndexOf[1]+" "+CurrentIndexOf[2]);//NumberOfPerms++;
+                    if (Problem.Validate(translation))
+                    {
+                        ValidationFound = true;
+                        foundTranslation = translation;
+                        return;
+                    }        
+                }
+                else if (nextCurrentIndex > GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM + Partial_validate_delay)
+                {
+                    foreach (int j in CurrentIndexOf)
+                    {
+                        if (counter > nextCurrentIndex)
+                            break;
+                        translation.Add(Problem.Expansion1.ElementAt(counter).Key, Problem.Expansion1.ElementAt(counter).Value[j]);
+                        counter++;
+                    }
+                    if (Problem.PartialValidate(translation) == false)
+                        return;
+                    else
+                        Partial_validate_delay++;
+                    recurse(nextCurrentIndex + 1);
                 }
                 else
                     recurse(nextCurrentIndex + 1);

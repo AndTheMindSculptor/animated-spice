@@ -19,7 +19,7 @@ namespace SWE_Decoder.AlgoLib
             bool noInterestingFound = true;
             foreach (Dictionary<Char, String> translation in Translations)
             {
-                validationResult = pi.Validate(translation);
+                //validationResult = pi.Validate(translation);
                 if (validationResult == "YES")
                     return "YES" + translation.ToPrintFormat();
                 else

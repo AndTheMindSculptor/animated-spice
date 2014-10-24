@@ -23,7 +23,7 @@ namespace SWE_Decoder.AlgoLib
 
                 foreach (Dictionary<Char, String> translation in translations)
                 {
-                    validationResult = pi.Validate(translation);
+                    //validationResult = pi.Validate(translation);
                     if (validationResult == "YES")
                         return "YES" + translation.ToPrintFormat();
                     else
