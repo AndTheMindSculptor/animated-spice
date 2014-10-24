@@ -84,7 +84,7 @@ namespace SWE_Decoder
             Console.WriteLine("Starting \"Cutting\"");
             HashSet<Char> usedGammas = new HashSet<Char>();
             Dictionary<Char, List<String>> CuttedDict = new Dictionary<Char, List<String>>();
-            foreach (String s in pi.t) foreach (char c in s) usedGammas.Add(c);
+            foreach (String s in pi.t) foreach (char c in s) if(IsCapital(c))usedGammas.Add(c);
             foreach (Char key in usedGammas)
             {
                 CuttedDict.Add(key, pi.Expansion1[key]);
