@@ -14,13 +14,7 @@ namespace SWE_Decoder
         public List<String> t = new List<String>();//both lower- and uppercase
         public Dictionary<Char, List<String>> Expansion1 = new Dictionary<Char, List<String>>();
         public Dictionary<Char, String> UnussedGammas = new Dictionary<Char, String>();
-
-        public int ValidationCount = 0;
-        public int PartialValidationCount = 0;
-
-        public Dictionary<Char, String>  latestAssignemt;
-        public Dictionary<Char, String> latestValidateAssignemt = null;
-
+        
         public ProblemInstance(int k, String s, List<String> t, Dictionary<Char, List<String>> Expansion1)
         {
             this.k = k;
@@ -32,10 +26,6 @@ namespace SWE_Decoder
         public bool Validate(Dictionary<Char,String> assignment)
         {
             String newString = "";
-            latestValidateAssignemt = assignment;
-            //ValidationCount++;
-            //if (ValidationCount % 100000 == 0)
-            //    Console.WriteLine("validation count: " + ValidationCount);
 
             foreach (String testt in t)
             {
@@ -62,10 +52,6 @@ namespace SWE_Decoder
         public bool PartialValidate(Dictionary<Char, String> assignment)
         {
             String partialString = "";
-            latestAssignemt = assignment;
-            PartialValidationCount++;
-            if (PartialValidationCount % 10000 == 0)
-                Console.WriteLine("Partial validation count: " + PartialValidationCount);
 
             foreach (String testt in t)
             {
@@ -82,15 +68,7 @@ namespace SWE_Decoder
                         partialString = String.Concat(partialString, c.ToString());
                 }
                 if (Regex.Match(s, partialString).Success == false)
-                {
-                    Console.WriteLine(partialString);
-                    Console.WriteLine("---");
-                    Console.WriteLine(assignment.ToPrintFormat());
-                    Console.WriteLine("---");
-                    if (assignment.ContainsKey('G') && assignment['B'] == "g" && assignment['G'] == "d")//&& assignment['G'] == "d" && assignment['E'] == "b" )//&& assignment['F'] == "a")// && assignment['D'] == "e")
-                        partialString = partialString;
                     return false;
-                }
 
                 partialString = "";
             }

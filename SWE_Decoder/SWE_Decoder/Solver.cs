@@ -68,7 +68,7 @@ namespace SWE_Decoder
         {
             if (UseConsole) Console.WriteLine("Starting \"Pruning\"");
             Dictionary<Char, List<String>> prunedexp = new Dictionary<Char, List<String>>();
-            List<String> prunedExpStrings = new List<String>();
+            HashSet<String> prunedExpStrings = new HashSet<String>();
             foreach (KeyValuePair<Char, List<String>> kvp in pi.Expansion1)
             {
                 foreach (String exp in kvp.Value)
@@ -78,8 +78,8 @@ namespace SWE_Decoder
                 }
                 if (prunedExpStrings.Count < 1)
                     return null;
-                prunedexp.Add(kvp.Key, prunedExpStrings);
-                prunedExpStrings = new List<String>();
+                prunedexp.Add(kvp.Key, prunedExpStrings.ToList());
+                prunedExpStrings = new HashSet<String>();
             }
             ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
             return ppi;
@@ -88,7 +88,6 @@ namespace SWE_Decoder
         private static ProblemInstance Cut(ProblemInstance pi)
         {
             if (UseConsole) Console.WriteLine("Starting \"Cutting\"");
-            //HashSet<Char> usedGammas = new HashSet<Char>();
             List<Char> usedGammas = new List<Char>();
             Dictionary<Char, List<String>> CuttedDict = new Dictionary<Char, List<String>>();
             foreach (String str in pi.t) 

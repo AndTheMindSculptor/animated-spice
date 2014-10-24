@@ -8,7 +8,7 @@ namespace SWE_Decoder.AlgoLib
 {
     public class BruteForceAlgorithm5
     {
-        private const int GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM = 1000;
+        private const int GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM = 3;
         private static int Partial_validate_delay = 0;
 
         private static ProblemInstance Problem = null;
@@ -34,7 +34,11 @@ namespace SWE_Decoder.AlgoLib
 
             for (int i = 0; i < MaxForIndex[0]; i++)
             {
+                //disable partial validation når man tester om multithreading giver nogen fordel, og se på test06
+                //spawn thread
+                //{
                 recurse(1);
+
                 CurrentIndexOf[0]++;
                 if (ValidationFound)
                 {
@@ -54,6 +58,7 @@ namespace SWE_Decoder.AlgoLib
 
                     return "YES" + final.ToPrintFormat();
                 }
+                //}
             }
 
             return "NO";
@@ -89,8 +94,7 @@ namespace SWE_Decoder.AlgoLib
                         return;
                     }
                 }
-                #region partial validate
-                else if (false && nextCurrentIndex > GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM + 0)//Partial_validate_delay
+                else if (nextCurrentIndex > GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM + Partial_validate_delay)
                 {
                     foreach (int j in CurrentIndexOf)
                     {
@@ -99,15 +103,12 @@ namespace SWE_Decoder.AlgoLib
                         translation.Add(Problem.Expansion1.ElementAt(counter).Key, Problem.Expansion1.ElementAt(counter).Value[j]);
                         counter++;
                     }
-                    if (Problem.PartialValidate(translation) == false)
-                        counter = counter;//continue;
-                    else
+                    if (Problem.PartialValidate(translation) == true)
                     {
                         Partial_validate_delay++;
                         recurse(nextCurrentIndex + 1);
                     }
                 }
-                #endregion
                 else
                     recurse(nextCurrentIndex + 1);
 
