@@ -6,7 +6,7 @@ namespace SWE_Decoder
 {
     class Program
     {
-        private const bool useConsole = true;
+        private const bool useConsole = false;
 
         static void Main(string[] args)
         {
@@ -43,7 +43,7 @@ namespace SWE_Decoder
             }
             
                         
-            resultString1 = Solver.BruteForce(pi,true);
+            resultString1 = Solver.BruteForce(pi,true,useConsole);
 
 
             if (useConsole)

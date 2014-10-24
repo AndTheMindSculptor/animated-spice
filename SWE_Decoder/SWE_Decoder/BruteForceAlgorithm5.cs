@@ -8,7 +8,7 @@ namespace SWE_Decoder.AlgoLib
 {
     public class BruteForceAlgorithm5
     {
-        private const int GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM = 4;
+        private const int GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM = 1000;
         private static int Partial_validate_delay = 0;
 
         private static ProblemInstance Problem = null;
@@ -20,6 +20,7 @@ namespace SWE_Decoder.AlgoLib
         public static string Run(ProblemInstance pi)
         {
             Problem = pi;
+            Dictionary<Char, String> mergedDict = new Dictionary<Char, String>();
 
             int numberOfGammas = Problem.Expansion1.Count();
 
@@ -33,10 +34,26 @@ namespace SWE_Decoder.AlgoLib
 
             for (int i = 0; i < MaxForIndex[0]; i++)
             {
-                if (ValidationFound)
-                    return "YES" + foundTranslation.ToPrintFormat();
                 recurse(1);
                 CurrentIndexOf[0]++;
+                if (ValidationFound)
+                {
+                    foreach (var v in foundTranslation)
+                        mergedDict.Add(v.Key, v.Value);
+                    foreach (var v in Problem.UnussedGammas)
+                        mergedDict.Add(v.Key, v.Value);
+
+                    var list = mergedDict.Keys.ToList();
+                    list.Sort();
+
+                    Dictionary<Char, String> final = new Dictionary<Char,String>();
+
+                    foreach (var key in list)
+                        final.Add(key, mergedDict[key]);
+
+
+                    return "YES" + final.ToPrintFormat();
+                }
             }
 
             return "NO";
@@ -54,6 +71,8 @@ namespace SWE_Decoder.AlgoLib
                 return;
             for (int i = 0; i < MaxForIndex[nextCurrentIndex]; i++)
             {
+                if (ValidationFound)
+                    return;
                 translation = new Dictionary<Char, String>();
                 counter = 0;
                 if (nextCurrentIndex+1 == CurrentIndexOf.Length)
@@ -68,9 +87,10 @@ namespace SWE_Decoder.AlgoLib
                         ValidationFound = true;
                         foundTranslation = translation;
                         return;
-                    }        
+                    }
                 }
-                else if (nextCurrentIndex > GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM + Partial_validate_delay)
+                #region partial validate
+                else if (false && nextCurrentIndex > GAMMA_START_INDEX_TO_PARTIAL_VALIDATE_FROM + 0)//Partial_validate_delay
                 {
                     foreach (int j in CurrentIndexOf)
                     {
@@ -80,11 +100,14 @@ namespace SWE_Decoder.AlgoLib
                         counter++;
                     }
                     if (Problem.PartialValidate(translation) == false)
-                        return;
+                        counter = counter;//continue;
                     else
+                    {
                         Partial_validate_delay++;
-                    recurse(nextCurrentIndex + 1);
+                        recurse(nextCurrentIndex + 1);
+                    }
                 }
+                #endregion
                 else
                     recurse(nextCurrentIndex + 1);
 

@@ -10,10 +10,13 @@ namespace SWE_Decoder
 {
     public class Solver
     {
-        public static String BruteForce(ProblemInstance pi, bool usePreproc)
+        private static bool UseConsole = false;
+
+        public static String BruteForce(ProblemInstance pi, bool usePreproc, bool useConsole)
         {
             // HACK: Brute Force Approach
             ProblemInstance ppi = pi;
+            UseConsole = useConsole;
 
             if (usePreproc)
             {
@@ -21,6 +24,11 @@ namespace SWE_Decoder
                 ppi = Preprocessing(pi);
                 if (ppi == null)
                     return "NO"; //if preprocessing fails (example: "A" can only be expanded to 'q', and s = "cdcdcdcd") the main function should return "NO"
+                foreach (KeyValuePair<Char, List<String>> kvp in pi.Expansion1)
+                {
+                    if (!ppi.Expansion1.ContainsKey(kvp.Key))
+                        ppi.UnussedGammas.Add(kvp.Key, kvp.Value[0]);
+                }
             }
 
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
@@ -40,25 +48,25 @@ namespace SWE_Decoder
 
         private static ProblemInstance Preprocessing(ProblemInstance pi)
         {
-            Console.WriteLine("Starting \"Preprocessing\"");
+            if (UseConsole) Console.WriteLine("Starting \"Preprocessing\"");
             ProblemInstance ppi = pi;
             ppi = Cut(pi);
             ppi = Prune(ppi);
-            Console.WriteLine("Ending \"Pruning\"");
+            if (UseConsole) Console.WriteLine("Ending \"Pruning\"");
             if (ppi == null)
                 return null;
             //if (PatternMatchingsNotFound(ppi))
             //    return null;
             // TODO: tjek på længden af translations vs længden af s
             // TODO: man kunne ligge permutations med meget lange translation bagerst så de bliver forsøgt validated sidst? (de er for det meste forkerte?)
-            Console.WriteLine("Ending \"Preprocessing\"");
+            if (UseConsole) Console.WriteLine("Ending \"Preprocessing\"");
             return ppi;
         }
 
         #region preprocessing functions
         private static ProblemInstance Prune(ProblemInstance pi)
         {
-            Console.WriteLine("Starting \"Pruning\"");
+            if (UseConsole) Console.WriteLine("Starting \"Pruning\"");
             Dictionary<Char, List<String>> prunedexp = new Dictionary<Char, List<String>>();
             List<String> prunedExpStrings = new List<String>();
             foreach (KeyValuePair<Char, List<String>> kvp in pi.Expansion1)
@@ -79,17 +87,19 @@ namespace SWE_Decoder
 
         private static ProblemInstance Cut(ProblemInstance pi)
         {
-            Console.WriteLine("Starting \"Cutting\"");
-            HashSet<Char> usedGammas = new HashSet<Char>();
+            if (UseConsole) Console.WriteLine("Starting \"Cutting\"");
+            //HashSet<Char> usedGammas = new HashSet<Char>();
+            List<Char> usedGammas = new List<Char>();
             Dictionary<Char, List<String>> CuttedDict = new Dictionary<Char, List<String>>();
-            foreach (String s in pi.t) 
-                foreach (char c in s) 
+            foreach (String str in pi.t) 
+                foreach (char c in str) 
                     if(IsCapital(c)) usedGammas.Add(c);
             foreach (Char key in usedGammas)
             {
-                CuttedDict.Add(key, pi.Expansion1[key]);
+                if (!CuttedDict.Keys.Contains(key))
+                    CuttedDict.Add(key, pi.Expansion1[key]);
             }
-            Console.WriteLine("Ending \"Cutting\"");
+            if (UseConsole) Console.WriteLine("Ending \"Cutting\"");
             return new ProblemInstance(pi.k, pi.s, pi.t, CuttedDict);
         }
         #endregion
@@ -115,7 +125,8 @@ namespace SWE_Decoder
         {
             String ret = "";
             foreach(KeyValuePair<Char,String> kvp in dict)
-                ret += "" + kvp.Key + ":" + kvp.Value+"\n";
+                ret += "" + kvp.Key + ":" + kvp.Value+"";
+
             return ret;
         }
     }
