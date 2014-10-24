@@ -33,9 +33,9 @@ namespace SWE_Decoder
         {
             String newString = "";
             latestValidateAssignemt = assignment;
-            ValidationCount++;
-            if (ValidationCount % 100000 == 0)
-                Console.WriteLine("validation count: " + ValidationCount);
+            //ValidationCount++;
+            //if (ValidationCount % 100000 == 0)
+            //    Console.WriteLine("validation count: " + ValidationCount);
 
             foreach (String testt in t)
             {

@@ -125,7 +125,7 @@ namespace SWE_Decoder
         {
             String ret = "";
             foreach(KeyValuePair<Char,String> kvp in dict)
-                ret += "" + kvp.Key + ":" + kvp.Value+"";
+                ret += "" + kvp.Key + ":" + kvp.Value+"\n";
 
             return ret;
         }
