@@ -41,9 +41,8 @@ namespace SWE_Decoder
         private static ProblemInstance Preprocessing(ProblemInstance pi)
         {
             Console.WriteLine("Starting \"Preprocessing\"");
-            ProblemInstance ppi;
+            ProblemInstance ppi = pi;
             ppi = Cut(pi);
-            Console.WriteLine("Ending \"Cutting\"");
             ppi = Prune(ppi);
             Console.WriteLine("Ending \"Pruning\"");
             if (ppi == null)
@@ -52,7 +51,6 @@ namespace SWE_Decoder
             //    return null;
             // TODO: tjek på længden af translations vs længden af s
             // TODO: man kunne ligge permutations med meget lange translation bagerst så de bliver forsøgt validated sidst? (de er for det meste forkerte?)
-            Console.WriteLine("Ending \"Pattern Mathcing\"");
             Console.WriteLine("Ending \"Preprocessing\"");
             return ppi;
         }
@@ -84,11 +82,14 @@ namespace SWE_Decoder
             Console.WriteLine("Starting \"Cutting\"");
             HashSet<Char> usedGammas = new HashSet<Char>();
             Dictionary<Char, List<String>> CuttedDict = new Dictionary<Char, List<String>>();
-            foreach (String s in pi.t) foreach (char c in s) if(IsCapital(c))usedGammas.Add(c);
+            foreach (String s in pi.t) 
+                foreach (char c in s) 
+                    if(IsCapital(c)) usedGammas.Add(c);
             foreach (Char key in usedGammas)
             {
                 CuttedDict.Add(key, pi.Expansion1[key]);
             }
+            Console.WriteLine("Ending \"Cutting\"");
             return new ProblemInstance(pi.k, pi.s, pi.t, CuttedDict);
         }
         #endregion

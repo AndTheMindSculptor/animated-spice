@@ -58,11 +58,10 @@ namespace SWE_Decoder
         public bool PartialValidate(Dictionary<Char, String> assignment)
         {
             String partialString = "";
-            int i;
             HashSet<Char> CharToMakeWildcard = new HashSet<Char>();
 
             PartialValidationCount++;
-            if (PartialValidationCount % 10 == 0)
+            if (PartialValidationCount % 1000 == 0)
                 Console.WriteLine("Partial validation count: " + PartialValidationCount);
 
             foreach (String testt in t)
