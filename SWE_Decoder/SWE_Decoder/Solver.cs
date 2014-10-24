@@ -42,7 +42,9 @@ namespace SWE_Decoder
         {
             Console.WriteLine("Starting \"Preprocessing\"");
             ProblemInstance ppi;
-            ppi = Prune(pi);
+            ppi = Cut(pi);
+            Console.WriteLine("Ending \"Cutting\"");
+            ppi = Prune(ppi);
             Console.WriteLine("Ending \"Pruning\"");
             if (ppi == null)
                 return null;
@@ -77,29 +79,17 @@ namespace SWE_Decoder
             return ppi;
         }
 
-        private static bool PatternMatchingsNotFound(ProblemInstance pi)
+        private static ProblemInstance Cut(ProblemInstance pi)
         {
-            Console.WriteLine("Starting \"Pattern Mathcing\"");
-            if (pi == null)
-                return false;
-
-            MatchCollection tmc;
-            //  TODO: add pattern matchings here
-
-            MatchCollection smc = Regex.Matches(pi.s, "lav en collection af patterns af formen såsom aa, aaa, a*a (wildcard * må kun være et bogstav)");
-
-            foreach (String test in pi.t)
+            Console.WriteLine("Starting \"Cutting\"");
+            HashSet<Char> usedGammas = new HashSet<Char>();
+            Dictionary<Char, List<String>> CuttedDict = new Dictionary<Char, List<String>>();
+            foreach (String s in pi.t) foreach (char c in s) if(IsCapital(c))usedGammas.Add(c);
+            foreach (Char key in usedGammas)
             {
-                if ((tmc = Regex.Matches(test, "find et pattern såsom AA, AAA, A*A (wildcard * må kun være et bogstav)")).Count > 0)
-                {
-                    foreach (Match m in tmc)
-                    {
-                        //hvis pattern ikke findes i smc => return true
-                    }
-                }
+                CuttedDict.Add(key, pi.Expansion1[key]);
             }
-
-            return false;//all patterns in t's also exists in s
+            return new ProblemInstance(pi.k, pi.s, pi.t, CuttedDict);
         }
         #endregion
 
