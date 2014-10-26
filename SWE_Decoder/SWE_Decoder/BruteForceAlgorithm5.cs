@@ -34,7 +34,7 @@ namespace SWE_Decoder.AlgoLib
 
             for (int i = 0; i < MaxForIndex[0]; i++)
             {
-                //disable partial validation når man tester om multithreading giver nogen fordel, og se på test06
+                //disable partial validation når man tester om multithreading giver nogen fordel, og se på test06 (hvis multithreading, så skal ting som CurrentIndexOf være thread-safe)
                 //spawn thread
                 //{
                 recurse(1);
