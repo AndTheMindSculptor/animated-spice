@@ -45,6 +45,11 @@ namespace SWE_Decoder
                         
             resultString1 = Solver.BruteForce(pi,true,useConsole);
 
+            //if (resultString1 == "threading")
+            //{
+            //    System.Threading.Thread.Sleep(30000);
+            //    return;
+            //}
 
             if (useConsole)
             {

@@ -46,6 +46,7 @@
     <Compile Include="BruteForceAlgorithm3.cs" />
     <Compile Include="BruteForceAlgorithm4.cs" />
     <Compile Include="BruteForceAlgorithm5.cs" />
+    <Compile Include="BruteForceAlgorithm6.cs" />
     <Compile Include="LoadChecker.cs" />
     <Compile Include="ProblemInstance.cs" />
     <Compile Include="Program.cs" />

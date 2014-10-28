@@ -32,9 +32,9 @@ namespace SWE_Decoder
             }
 
             //2.a:for hver kombination af oversættelser til listen i 1 opret en <char,char> dictionary (alle permutationer af oversættelser)
-            return BruteForceAlgorithm5.Run(ppi);
+            return BruteForceAlgorithm6.Run(ppi);
             //2.b:afprøv kombinationen, hvis den opfylder kravene i a.1
-
+                        
 
             //a.1: 
             //      findes oversættelsen i s (s=sdsdsd oversættelse: A=q -> skip fordi q ikke findes i s)  (pruning)
