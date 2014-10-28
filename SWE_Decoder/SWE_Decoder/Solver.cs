@@ -53,6 +53,8 @@ namespace SWE_Decoder
             ppi = Cut(pi);
             ppi = Prune(ppi);
             if (UseConsole) Console.WriteLine("Ending \"Pruning\"");
+            //ppi = PruneTs(ppi);
+            //if (UseConsole) Console.WriteLine("Ending \"Pruning t's\"");
             if (ppi == null)
                 return null;
             //if (PatternMatchingsNotFound(ppi))
@@ -82,6 +84,33 @@ namespace SWE_Decoder
                 prunedExpStrings = new HashSet<String>();
             }
             ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, pi.t, prunedexp);
+            return ppi;
+        }
+
+        private static ProblemInstance PruneTs(ProblemInstance pi)
+        {
+            if (UseConsole) Console.WriteLine("Starting \"Pruning t's\"");
+            if (pi == null)
+                return null;
+            HashSet<String> newt = new HashSet<String>();
+            bool containsUpper = false;
+            foreach (String str in pi.t)
+            {
+                //if (str.Any(c => char.IsUpper(c)))
+                containsUpper = false;
+                foreach(Char c in str)
+                {
+                    if (Char.IsUpper(c))
+                    {
+                        containsUpper = true;
+                        break;
+                    }
+                }
+                if (containsUpper)
+                    newt.Add(str);
+            }
+
+            ProblemInstance ppi = new ProblemInstance(pi.k, pi.s, newt.ToList(), pi.Expansion1);
             return ppi;
         }
 
